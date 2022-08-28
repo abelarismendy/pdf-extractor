@@ -1,29 +1,86 @@
+from email.message import Message
+from lib2to3.pgen2 import driver
 import unittest
 from pyunitreport import HTMLTestRunner
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
+import json
 
+options = Options()
+options.add_argument('user-data-dir=/tmp/tarun')
+
+
+
+
+settings = {
+       "recentDestinations": [{
+            "id": "Save as PDF",
+            "origin": "local",
+            "account": "",
+        }],
+        "selectedDestinationId": "Save as PDF",
+        "version": 2
+    }
+prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings)}
+options.add_experimental_option('prefs', prefs)
+options.add_argument('--kiosk-printing')
+
+
+# options.add_experimental_option('detach', True)
 
 
 class LoginUniandes(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(executable_path= './drivers/chromedriver',options=options)
         self.driver.get('https://login.ezproxy.uniandes.edu.co/login?qurl=http://www.ebooks7-24.com%2f%3fil%3d9168')
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
 
-    def test_login(self):
+    def test_main(self):
+        # logo = self.driver.find_elements(By.XPATH, '//*[@id="imgLogo"]')
+
+        # is_logged = len(logo) > 0
+
+        # print('is_logged: ' + str(is_logged))
+        # messagebox.showinfo('Resultado', 'El usuario está logueado: ' + str(is_logged))
+
+        # if is_logged:
+        #     messagebox.showinfo('Login', 'Login exitoso')
+
+        # else:
+            # manual login
         self.driver.find_element(By.CSS_SELECTOR, '.centrado1 > a').click()
-        # manual login
         messagebox.showinfo('LOGIN', 'Please complete the login form and the 2-step verification process then click OK')
 
         # read button
         self.driver.find_element(By.XPATH, '//*[@id="button-1056-btnInnerEl"]').click()
 
-        messagebox.showinfo('READ', 'Please click OK to read the book')
+        # ask for pages range
+        first_page = simpledialog.askinteger('FIRST PAGE', 'Enter the first page number')
+        last_page = simpledialog.askinteger('LAST PAGE', 'Enter the last page number')
 
+        # select pages range
+
+        self.assertGreater(last_page, first_page)
+        self.assertGreater(last_page, 0)
+        self.assertLessEqual(last_page, 702)
+
+
+        input_page = self.driver.find_element(By.XPATH, '//*[@id="VIEWER_page9168-inputEl"]')
+        input_page.clear()
+        input_page.send_keys(str(first_page))
+        go_to_page = self.driver.find_element(By.XPATH, '//*[@id="button-1505"]')
+        go_to_page.click()
+        actual_page = int(input_page.get_attribute('value'))
+        self.driver.implicitly_wait(10)
+        page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
+        self.driver.switch_to.frame(page_html)
+        content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
+        self.driver.execute_script('window.print();')
+        messagebox.showinfo('PRINT', 'Printing...')
+        self.driver.implicitly_wait(10)
 
 
 if __name__ == '__main__':
