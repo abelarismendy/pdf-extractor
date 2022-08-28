@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from tkinter import messagebox, simpledialog
 import json
-
+import re
 
 
 options = Options()
@@ -91,27 +91,36 @@ class LoginUniandes(unittest.TestCase):
 
 
         page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
-        self.driver.switch_to.frame(page_html)
-        content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
+        # self.driver.switch_to.frame(page_html)
+        # content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
+        link = page_html.get_attribute('src')
+        messagebox.showinfo('LINK', 'The link is: ' + link)
 
-        # self.driver.execute_script('window.print();')
-        # messagebox.showinfo('PRINT', 'Printing...')
-        # self.driver.implicitly_wait(10)
+        messagebox.showinfo('DISABLE JS', 'Please disable javascript and click OK')
 
-        content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
-        self.driver.switch_to.default_content()
+        self.driver.execute_script('window.print();')
+        messagebox.showinfo('PRINT', 'Printing...')
+        self.driver.implicitly_wait(10)
 
-        while actual_page < last_page:
-            next_page = self.driver.find_element(By.XPATH, '//*[@id="button-1521"]')
-            next_page.click()
-            actual_page = int(input_page.get_attribute('value'))
-            self.driver.implicitly_wait(10)
-            page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
-            self.driver.switch_to.frame(page_html)
-            content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
 
-            content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
-            self.driver.switch_to.default_content()
+        # messagebox.showinfo('ADJUST ZOOM', 'Adjust the zoom level')
+        # print('content: ' + content.text)
+        # print(content.get_attribute('outerHTML'))
+
+        # content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
+        # self.driver.switch_to.default_content()
+
+        # while actual_page < last_page:
+        #     next_page = self.driver.find_element(By.XPATH, '//*[@id="button-1521"]')
+        #     next_page.click()
+        #     actual_page = int(input_page.get_attribute('value'))
+        #     self.driver.implicitly_wait(10)
+        #     page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
+        #     self.driver.switch_to.frame(page_html)
+        #     content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
+
+        #     content.screenshot('./ss/page_' + str(actual_page) + '.png')
+        #     self.driver.switch_to.default_content()
 
 
 
