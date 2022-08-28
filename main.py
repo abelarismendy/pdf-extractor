@@ -37,7 +37,7 @@ class LoginUniandes(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome(executable_path= './drivers/chromedriver',options=options)
         self.driver.get('https://login.ezproxy.uniandes.edu.co/login?qurl=http://www.ebooks7-24.com%2f%3fil%3d9168')
-        # self.driver.maximize_window()
+        self.driver.maximize_window()
         self.driver.implicitly_wait(10)
 
     def test_main(self):
@@ -80,6 +80,7 @@ class LoginUniandes(unittest.TestCase):
         go_to_page = self.driver.find_element(By.XPATH, '//*[@id="button-1505"]')
         go_to_page.click()
         actual_page = int(input_page.get_attribute('value'))
+        first_page = actual_page
         self.driver.implicitly_wait(10)
 
         # n = simpledialog.askinteger('ZOOM LEVEL', 'Enter the zoom level')
@@ -106,19 +107,9 @@ class LoginUniandes(unittest.TestCase):
         self.driver.implicitly_wait(10)
 
         print('page ' + str(actual_page) + ' of ' + str(last_page))
-
         while actual_page < last_page:
             actual_page += 1
-            if actual_page%100 == 0:
-                folder_name = str(actual_page-99) + '-' + str(actual_page)
-                print('moving pdfs to pdf folder' + folder_name)
-                os.makedirs('./pdf/' + folder_name, exist_ok=True)
-                get_files = os.listdir('./pdf/')
-                for file in get_files:
-                    if file.endswith('.pdf'):
-                        print('moving ' + file + ' to ' + folder_name)
-                        shutil.move('./pdf/' + file, './pdf/' + folder_name + '/', file)
-                print('all pdfs moved to pdf folder ' + folder_name)
+
             self.driver.implicitly_wait(10)
             link = re.sub(link_pattern, '&page=' + str(actual_page) + '&', link)
             self.driver.get(link)
@@ -126,6 +117,16 @@ class LoginUniandes(unittest.TestCase):
             self.driver.execute_script('window.print();')
             self.driver.implicitly_wait(10)
             print('\rpage ' + str(actual_page) + ' of ' + str(last_page))
+
+        folder_name = str(first_page) + '-' + str(actual_page)
+        print('moving pdfs to pdf folder' + folder_name)
+        os.makedirs('./pdf/' + folder_name, exist_ok=True)
+        get_files = os.listdir('./pdf/')
+        for file in get_files:
+            if file.endswith('.pdf'):
+                print('moving ' + file + ' to ' + folder_name)
+                shutil.move('./pdf/' + file, './pdf/' + folder_name + '/', file)
+        print('all pdfs moved to pdf folder ' + folder_name)
 
 
 
