@@ -60,6 +60,10 @@ class LoginUniandes(unittest.TestCase):
         # ask for pages range
         first_page = simpledialog.askinteger('FIRST PAGE', 'Enter the first page number')
         last_page = simpledialog.askinteger('LAST PAGE', 'Enter the last page number')
+        if first_page is None or first_page == '':
+            first_page = 1
+        if last_page is None or last_page == '':
+            last_page = 702
 
         # select pages range
 
@@ -78,9 +82,25 @@ class LoginUniandes(unittest.TestCase):
         page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
         self.driver.switch_to.frame(page_html)
         content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
-        self.driver.execute_script('window.print();')
-        messagebox.showinfo('PRINT', 'Printing...')
-        self.driver.implicitly_wait(10)
+
+        content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
+        self.driver.switch_to.default_content()
+
+        while actual_page < last_page:
+            next_page = self.driver.find_element(By.XPATH, '//*[@id="button-1521"]')
+            next_page.click()
+            actual_page = int(input_page.get_attribute('value'))
+            self.driver.implicitly_wait(10)
+            page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
+            self.driver.switch_to.frame(page_html)
+            content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
+
+            content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
+            self.driver.switch_to.default_content()
+
+        # self.driver.execute_script('window.print();')
+        # messagebox.showinfo('PRINT', 'Printing...')
+        # self.driver.implicitly_wait(10)
 
 
 if __name__ == '__main__':
