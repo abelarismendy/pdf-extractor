@@ -40,20 +40,20 @@ class LoginUniandes(unittest.TestCase):
         self.driver.implicitly_wait(10)
 
     def test_main(self):
-        # logo = self.driver.find_elements(By.XPATH, '//*[@id="imgLogo"]')
+        logo = self.driver.find_elements(By.XPATH, '//*[@id="imgLogo"]')
 
-        # is_logged = len(logo) > 0
+        is_logged = len(logo) > 0
 
-        # print('is_logged: ' + str(is_logged))
-        # messagebox.showinfo('Resultado', 'El usuario está logueado: ' + str(is_logged))
+        print('is_logged: ' + str(is_logged))
+        messagebox.showinfo('Resultado', 'El usuario está logueado: ' + str(is_logged))
 
-        # if is_logged:
-        #     messagebox.showinfo('Login', 'Login exitoso')
+        if is_logged:
+            messagebox.showinfo('Login', 'Login exitoso')
 
-        # else:
+        else:
             # manual login
-        self.driver.find_element(By.CSS_SELECTOR, '.centrado1 > a').click()
-        messagebox.showinfo('LOGIN', 'Please complete the login form and the 2-step verification process then click OK')
+            self.driver.find_element(By.CSS_SELECTOR, '.centrado1 > a').click()
+            messagebox.showinfo('LOGIN', 'Please complete the login form and the 2-step verification process then click OK')
 
         # read button
         self.driver.find_element(By.XPATH, '//*[@id="button-1056-btnInnerEl"]').click()
