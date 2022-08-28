@@ -6,7 +6,8 @@ from selenium.webdriver.common.by import By
 from tkinter import messagebox, simpledialog
 import json
 import re
-
+import os
+import shutil
 
 options = Options()
 options.add_argument('user-data-dir=/tmp/tarun')
@@ -108,6 +109,16 @@ class LoginUniandes(unittest.TestCase):
 
         while actual_page < last_page:
             actual_page += 1
+            if actual_page%100 == 0:
+                folder_name = str(actual_page-99) + '-' + str(actual_page)
+                print('moving pdfs to pdf folder' + folder_name)
+                os.makedirs('./pdf/' + folder_name, exist_ok=True)
+                get_files = os.listdir('./pdf/')
+                for file in get_files:
+                    if file.endswith('.pdf'):
+                        print('moving ' + file + ' to ' + folder_name)
+                        shutil.move('./pdf/' + file, './pdf/' + folder_name + '/', file)
+                print('all pdfs moved to pdf folder ' + folder_name)
             self.driver.implicitly_wait(10)
             link = re.sub(link_pattern, '&page=' + str(actual_page) + '&', link)
             self.driver.get(link)
