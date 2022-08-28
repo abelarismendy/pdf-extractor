@@ -1,5 +1,3 @@
-from email.message import Message
-from lib2to3.pgen2 import driver
 import unittest
 from pyunitreport import HTMLTestRunner
 from selenium import webdriver
@@ -7,6 +5,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from tkinter import messagebox, simpledialog
 import json
+
+
 
 options = Options()
 options.add_argument('user-data-dir=/tmp/tarun')
@@ -23,9 +23,10 @@ settings = {
         "selectedDestinationId": "Save as PDF",
         "version": 2
     }
-prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings)}
+prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings), 'savefile.default_directory': '/home/abel/projects/extract_pdf/pdf/'}
 options.add_experimental_option('prefs', prefs)
 options.add_argument('--kiosk-printing')
+options.add_argument("--window-size=2000,2000")
 
 
 # options.add_experimental_option('detach', True)
@@ -35,7 +36,7 @@ class LoginUniandes(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome(executable_path= './drivers/chromedriver',options=options)
         self.driver.get('https://login.ezproxy.uniandes.edu.co/login?qurl=http://www.ebooks7-24.com%2f%3fil%3d9168')
-        self.driver.maximize_window()
+        # self.driver.maximize_window()
         self.driver.implicitly_wait(10)
 
     def test_main(self):
@@ -79,9 +80,23 @@ class LoginUniandes(unittest.TestCase):
         go_to_page.click()
         actual_page = int(input_page.get_attribute('value'))
         self.driver.implicitly_wait(10)
+
+        # n = simpledialog.askinteger('ZOOM LEVEL', 'Enter the zoom level')
+
+        # zoom = self.driver.find_element(By.XPATH, '//*[@id="button-1509"]')
+
+        # for i in range(n):
+        #     zoom.click()
+        #     self.driver.implicitly_wait(10)
+
+
         page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
         self.driver.switch_to.frame(page_html)
         content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
+
+        # self.driver.execute_script('window.print();')
+        # messagebox.showinfo('PRINT', 'Printing...')
+        # self.driver.implicitly_wait(10)
 
         content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
         self.driver.switch_to.default_content()
@@ -98,9 +113,6 @@ class LoginUniandes(unittest.TestCase):
             content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
             self.driver.switch_to.default_content()
 
-        # self.driver.execute_script('window.print();')
-        # messagebox.showinfo('PRINT', 'Printing...')
-        # self.driver.implicitly_wait(10)
 
 
 if __name__ == '__main__':
