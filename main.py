@@ -15,7 +15,7 @@ options.add_argument('user-data-dir=/tmp/tarun')
 
 
 settings = {
-       "recentDestinations": [{
+        "recentDestinations": [{
             "id": "Save as PDF",
             "origin": "local",
             "account": "",
@@ -26,7 +26,7 @@ settings = {
 prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings), 'savefile.default_directory': '/home/abel/projects/extract_pdf/pdf/'}
 options.add_experimental_option('prefs', prefs)
 options.add_argument('--kiosk-printing')
-options.add_argument("--window-size=2000,2000")
+# options.add_argument("--window-size=2000,2000")
 
 
 # options.add_experimental_option('detach', True)
@@ -94,13 +94,28 @@ class LoginUniandes(unittest.TestCase):
         # self.driver.switch_to.frame(page_html)
         # content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
         link = page_html.get_attribute('src')
-        messagebox.showinfo('LINK', 'The link is: ' + link)
+        print(link)
+        link_pattern = re.compile(r'&page=(\d+)&')
+        link = re.sub(link_pattern, '&page=' + str(actual_page) + '&', link)
+        self.driver.get(link)
 
         messagebox.showinfo('DISABLE JS', 'Please disable javascript and click OK')
 
         self.driver.execute_script('window.print();')
-        messagebox.showinfo('PRINT', 'Printing...')
         self.driver.implicitly_wait(10)
+
+        print('page ' + str(actual_page) + ' of ' + str(last_page))
+
+        while actual_page < last_page:
+            actual_page += 1
+            self.driver.implicitly_wait(10)
+            link = re.sub(link_pattern, '&page=' + str(actual_page) + '&', link)
+            self.driver.get(link)
+            self.driver.implicitly_wait(10)
+            self.driver.execute_script('window.print();')
+            self.driver.implicitly_wait(10)
+            print('\rpage ' + str(actual_page) + ' of ' + str(last_page))
+
 
 
         # messagebox.showinfo('ADJUST ZOOM', 'Adjust the zoom level')
