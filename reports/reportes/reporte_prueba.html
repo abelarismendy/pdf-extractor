@@ -11,9 +11,9 @@
         <div class="row">
             <div class="col-xs-12">
                 <h2 class="text-capitalize">Test Result</h2>
-                <p class='attribute'><strong>Start Time: </strong>2022-08-28 15:29:49</p>
-                <p class='attribute'><strong>Duration: </strong>177.122s</p>
-                <p class='attribute'><strong>Status: </strong>Pass: 1</p>
+                <p class='attribute'><strong>Start Time: </strong>2022-08-29 06:47:46</p>
+                <p class='attribute'><strong>Duration: </strong>11.561s</p>
+                <p class='attribute'><strong>Status: </strong>Error: 1</p>
             </div>
         </div>
         <div class="row">
@@ -27,17 +27,49 @@
                     </thead>
                     <tbody>
                         
-                            <tr class='success'>
+                            <tr class='warning'>
                                 <td class="col-xs-9">test_main (__main__.LoginUniandes)</td>
                                 <td class="col-xs-3">
-                                    <span class="label label-success">
+                                    <span class="label label-warning">
                                         
-                                            Pass
+                                            Error
                                         
                                     </span>
                                     
+                                        &nbsp<button class="btn btn-default btn-xs">View</button>
+                                    
                                 </td>
                             </tr>
+                            
+                                <tr style="display:none;">
+                                    <td class="col-xs-9">
+                                        <p>NoSuchWindowException</p>
+                                        <p>Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=104.0.5112.101)
+Stacktrace:
+0   chromedriver_mac                    0x000000010e847149 chromedriver_mac + 4469065
+1   chromedriver_mac                    0x000000010e7d1233 chromedriver_mac + 3985971
+2   chromedriver_mac                    0x000000010e467fe8 chromedriver_mac + 409576
+3   chromedriver_mac                    0x000000010e449618 chromedriver_mac + 284184
+4   chromedriver_mac                    0x000000010e4bf16b chromedriver_mac + 766315
+5   chromedriver_mac                    0x000000010e4cdc7f chromedriver_mac + 826495
+6   chromedriver_mac                    0x000000010e4bbb53 chromedriver_mac + 752467
+7   chromedriver_mac                    0x000000010e491905 chromedriver_mac + 579845
+8   chromedriver_mac                    0x000000010e492955 chromedriver_mac + 584021
+9   chromedriver_mac                    0x000000010e8186ad chromedriver_mac + 4277933
+10  chromedriver_mac                    0x000000010e81cb3a chromedriver_mac + 4295482
+11  chromedriver_mac                    0x000000010e821cdf chromedriver_mac + 4316383
+12  chromedriver_mac                    0x000000010e81d857 chromedriver_mac + 4298839
+13  chromedriver_mac                    0x000000010e7f664f chromedriver_mac + 4138575
+14  chromedriver_mac                    0x000000010e8381f8 chromedriver_mac + 4407800
+15  chromedriver_mac                    0x000000010e83837f chromedriver_mac + 4408191
+16  chromedriver_mac                    0x000000010e84ecb5 chromedriver_mac + 4500661
+17  libsystem_pthread.dylib             0x00007ff81a0974e1 _pthread_start + 125
+18  libsystem_pthread.dylib             0x00007ff81a092f6b thread_start + 15
+</p>
+                                    </td>
+                                </tr>
                             
                         
                         <tr>
@@ -45,7 +77,7 @@
                                Total Test Runned: 1
                             </td>
                             <td>
-                                <span>Pass: 1</span>
+                                <span>Error: 1</span>
                             </td>
                         </tr>
                     </tbody>

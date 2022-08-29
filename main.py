@@ -8,6 +8,14 @@ import json
 import re
 import os
 import shutil
+from sys import platform
+
+
+if platform == "linux" or platform == "linux2":
+    chrome_path = './drivers/chromedriver'
+
+elif platform == "darwin":
+    chrome_path = './drivers/chromedriver_mac'
 
 options = Options()
 options.add_argument('user-data-dir=/tmp/tarun')
@@ -35,7 +43,7 @@ options.add_argument('--kiosk-printing')
 
 class LoginUniandes(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Chrome(executable_path= './drivers/chromedriver',options=options)
+        self.driver = webdriver.Chrome(executable_path= chrome_path,options=options)
         self.driver.get('https://login.ezproxy.uniandes.edu.co/login?qurl=http://www.ebooks7-24.com%2f%3fil%3d9168')
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
