@@ -9,6 +9,7 @@ import re
 import os
 import shutil
 from sys import platform
+import merge
 
 
 if platform == "linux" or platform == "linux2":
@@ -32,19 +33,24 @@ settings = {
         "selectedDestinationId": "Save as PDF",
         "version": 2
     }
-prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings), 'savefile.default_directory': '/home/abel/projects/extract_pdf/pdf/'}
-options.add_experimental_option('prefs', prefs)
 options.add_argument('--kiosk-printing')
 # options.add_argument("--window-size=2000,2000")
 
 
 # options.add_experimental_option('detach', True)
 
+script_route = os.path.realpath(__file__)
+script_folder = os.path.dirname(script_route)
+print(script_folder)
+
 
 class LoginUniandes(unittest.TestCase):
     def setUp(self):
+        self.book_id = simpledialog.askstring('BOOK ID', 'Enter the book id (4 digits)')
+        prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings), 'savefile.default_directory': f'{script_folder}/pdf/{self.book_id}/'}
+        options.add_experimental_option('prefs', prefs)
         self.driver = webdriver.Chrome(executable_path= chrome_path,options=options)
-        self.driver.get('https://login.ezproxy.uniandes.edu.co/login?qurl=http://www.ebooks7-24.com%2f%3fil%3d9168')
+        self.driver.get('https://login.ezproxy.uniandes.edu.co/login?qurl=http://www.ebooks7-24.com%2f%3fil%3d' + self.book_id)
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
 
@@ -82,7 +88,7 @@ class LoginUniandes(unittest.TestCase):
         self.assertLessEqual(last_page, 702)
 
 
-        input_page = self.driver.find_element(By.XPATH, '//*[@id="VIEWER_page9168-inputEl"]')
+        input_page = self.driver.find_element(By.XPATH, f'//*[@id="VIEWER_page{self.book_id}-inputEl"]')
         input_page.clear()
         input_page.send_keys(str(first_page))
         go_to_page = self.driver.find_element(By.XPATH, '//*[@id="button-1505"]')
@@ -91,18 +97,8 @@ class LoginUniandes(unittest.TestCase):
         first_page = actual_page
         self.driver.implicitly_wait(10)
 
-        # n = simpledialog.askinteger('ZOOM LEVEL', 'Enter the zoom level')
+        page_html = self.driver.find_element(By.XPATH, f'//*[@id="frmBookPDF_{self.book_id}"]')
 
-        # zoom = self.driver.find_element(By.XPATH, '//*[@id="button-1509"]')
-
-        # for i in range(n):
-        #     zoom.click()
-        #     self.driver.implicitly_wait(10)
-
-
-        page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
-        # self.driver.switch_to.frame(page_html)
-        # content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
         link = page_html.get_attribute('src')
         print(link)
         link_pattern = re.compile(r'&page=(\d+)&')
@@ -128,37 +124,20 @@ class LoginUniandes(unittest.TestCase):
 
         folder_name = str(first_page) + '-' + str(actual_page)
         print('moving pdfs to pdf folder' + folder_name)
-        os.makedirs('./pdf/' + folder_name, exist_ok=True)
-        get_files = os.listdir('./pdf/')
+        os.makedirs(f'./pdf/{self.book_id}/' + folder_name, exist_ok=True)
+        get_files = os.listdir(f'./pdf/{self.book_id}/')
         for file in get_files:
             if file.endswith('.pdf'):
                 print('moving ' + file + ' to ' + folder_name)
-                shutil.move('./pdf/' + file, './pdf/' + folder_name + '/', file)
+                shutil.move(f'./pdf/{self.book_id}' + file, f'./pdf/{self.book_id}' + folder_name + '/', file)
         print('all pdfs moved to pdf folder ' + folder_name)
 
 
-
-        # messagebox.showinfo('ADJUST ZOOM', 'Adjust the zoom level')
-        # print('content: ' + content.text)
-        # print(content.get_attribute('outerHTML'))
-
-        # content.screenshot('./screenshots/page_' + str(actual_page) + '.png')
-        # self.driver.switch_to.default_content()
-
-        # while actual_page < last_page:
-        #     next_page = self.driver.find_element(By.XPATH, '//*[@id="button-1521"]')
-        #     next_page.click()
-        #     actual_page = int(input_page.get_attribute('value'))
-        #     self.driver.implicitly_wait(10)
-        #     page_html = self.driver.find_element(By.XPATH, '//*[@id="frmBookPDF_9168"]')
-        #     self.driver.switch_to.frame(page_html)
-        #     content = self.driver.find_element(By.XPATH, '//*[@id="pf1"]/div[1]')
-
-        #     content.screenshot('./ss/page_' + str(actual_page) + '.png')
-        #     self.driver.switch_to.default_content()
+        # merge pdfs
+        merge.merge_book(self.book_id)
 
 
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, testRunner=HTMLTestRunner(output='reportes', report_name='reporte_prueba'))
-    #unittest.main()
+
