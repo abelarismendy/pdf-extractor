@@ -138,7 +138,6 @@ class LoginUniandes(unittest.TestCase):
             if actual_page - first_page == 100:
                 rename_files(first_page, actual_page, self.book_id)
                 first_page = actual_page + 1
-
         rename_files(first_page, actual_page, self.book_id)
         # merge pdfs
         merge.merge_book(self.book_id)
