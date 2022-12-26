@@ -46,7 +46,7 @@ print(script_folder)
 def rename_files(first_page, actual_page, book_id):
 
     folder_name = str(first_page) + '-' + str(actual_page)
-    print('moving pdfs to pdf folder' + folder_name)
+    print('moving pdfs to pdf folder ' + folder_name)
     os.makedirs(f'./pdf/{book_id}/' + folder_name, exist_ok=True)
     get_files = os.listdir(f'./pdf/{book_id}/')
     for file in get_files:
@@ -137,9 +137,9 @@ class LoginUniandes(unittest.TestCase):
             print('\rpage ' + str(actual_page) + ' of ' + str(last_page))
             if actual_page - first_page == 100:
                 rename_files(first_page, actual_page, self.book_id)
-                first_page = actual_page
+                first_page = actual_page + 1
 
-
+        rename_files(first_page, actual_page, self.book_id)
         # merge pdfs
         merge.merge_book(self.book_id)
 
@@ -147,4 +147,5 @@ class LoginUniandes(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, testRunner=HTMLTestRunner(output='reportes', report_name='reporte_prueba'))
-
+    # rename_files(502, 529, '9346')
+    # merge.merge_book('9346')
