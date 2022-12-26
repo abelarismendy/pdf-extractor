@@ -43,10 +43,24 @@ script_route = os.path.realpath(__file__)
 script_folder = os.path.dirname(script_route)
 print(script_folder)
 
+def rename_files(first_page, actual_page, book_id):
+
+    folder_name = str(first_page) + '-' + str(actual_page)
+    print('moving pdfs to pdf folder' + folder_name)
+    os.makedirs(f'./pdf/{book_id}/' + folder_name, exist_ok=True)
+    get_files = os.listdir(f'./pdf/{book_id}/')
+    for file in get_files:
+        if file.endswith('.pdf'):
+            print('moving ' + file + ' to ' + folder_name)
+            shutil.move(f'./pdf/{book_id}/' + file, f'./pdf/{book_id}/' + folder_name + '/', file)
+    print('all pdfs moved to pdf folder ' + folder_name)
+
+
 
 class LoginUniandes(unittest.TestCase):
     def setUp(self):
         self.book_id = simpledialog.askstring('BOOK ID', 'Enter the book id (4 digits)')
+        os.makedirs(f'./pdf/{self.book_id}/', exist_ok=True)
         prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings), 'savefile.default_directory': f'{script_folder}/pdf/{self.book_id}/'}
         options.add_experimental_option('prefs', prefs)
         self.driver = webdriver.Chrome(executable_path= chrome_path,options=options)
@@ -79,13 +93,13 @@ class LoginUniandes(unittest.TestCase):
         if first_page is None or first_page == '':
             first_page = 1
         if last_page is None or last_page == '':
-            last_page = 702
+            last_page = 1000
 
         # select pages range
 
         self.assertGreater(last_page, first_page)
         self.assertGreater(last_page, 0)
-        self.assertLessEqual(last_page, 702)
+        self.assertLessEqual(last_page, 1000)
 
 
         input_page = self.driver.find_element(By.XPATH, f'//*[@id="VIEWER_page{self.book_id}-inputEl"]')
@@ -121,16 +135,9 @@ class LoginUniandes(unittest.TestCase):
             self.driver.execute_script('window.print();')
             self.driver.implicitly_wait(10)
             print('\rpage ' + str(actual_page) + ' of ' + str(last_page))
-
-        folder_name = str(first_page) + '-' + str(actual_page)
-        print('moving pdfs to pdf folder' + folder_name)
-        os.makedirs(f'./pdf/{self.book_id}/' + folder_name, exist_ok=True)
-        get_files = os.listdir(f'./pdf/{self.book_id}/')
-        for file in get_files:
-            if file.endswith('.pdf'):
-                print('moving ' + file + ' to ' + folder_name)
-                shutil.move(f'./pdf/{self.book_id}' + file, f'./pdf/{self.book_id}' + folder_name + '/', file)
-        print('all pdfs moved to pdf folder ' + folder_name)
+            if actual_page - first_page == 100:
+                rename_files(first_page, actual_page, self.book_id)
+                first_page = actual_page
 
 
         # merge pdfs
