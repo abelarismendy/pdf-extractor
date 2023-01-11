@@ -15,7 +15,7 @@ This script is a tool that allows you to extract PDF files from books on the Uni
 1. Install Python 3.6 or higher.
 2. Install the required libraries by running `pip install -r requirements.txt`.
 3. Download and install the Chrome browser.
-4. Download the appropriate version of ChromeDriver for your system and place it in the `drivers` folder.
+4. Download the appropriate version of [ChromeDriver](https://chromedriver.chromium.org/downloads) for your system and place it in the `drivers` folder.
 5. Update the `chrome_path` variable in the script with the path to the ChromeDriver executable.
 
 ## Usage
