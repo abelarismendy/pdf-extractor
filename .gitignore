@@ -1,4 +1,6 @@
 __pycache__/
 reports/
+books/
+pdf/
 venv/
 .DS_Store
