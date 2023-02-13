@@ -46,3 +46,6 @@ def merge_book(book_id):
 
     merger.write(destination_merged)
     merger.close()
+
+if __name__ == '__main__':
+    merge_book(sys.argv[1])

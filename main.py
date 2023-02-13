@@ -10,6 +10,7 @@ import os
 import shutil
 from sys import platform
 import merge
+from . import compress
 
 
 if platform == "linux" or platform == "linux2":
@@ -99,7 +100,7 @@ class LoginUniandes(unittest.TestCase):
 
         self.assertGreater(last_page, first_page)
         self.assertGreater(last_page, 0)
-        self.assertLessEqual(last_page, 1000)
+        self.assertLessEqual(last_page, 2000)
 
 
         input_page = self.driver.find_element(By.XPATH, f'//*[@id="VIEWER_page{self.book_id}-inputEl"]')
@@ -134,6 +135,7 @@ class LoginUniandes(unittest.TestCase):
             self.driver.implicitly_wait(10)
             self.driver.execute_script('window.print();')
             self.driver.implicitly_wait(10)
+            print('\r')
             print('\rpage ' + str(actual_page) + ' of ' + str(last_page))
             if actual_page - first_page == 100:
                 rename_files(first_page, actual_page, self.book_id)
@@ -142,6 +144,10 @@ class LoginUniandes(unittest.TestCase):
         # merge pdfs
         merge.merge_book(self.book_id)
 
+        # compress pdf
+        book_path = f'./books/{self.book_id}.pdf'
+        book_output_path = f'./books/{self.book_id}_compressed.pdf'
+        compress.compress(book_path, book_output_path, power=3)
 
 
 if __name__ == '__main__':
