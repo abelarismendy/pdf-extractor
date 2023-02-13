@@ -10,7 +10,7 @@ import os
 import shutil
 from sys import platform
 import merge
-from . import compress
+import compress
 
 
 if platform == "linux" or platform == "linux2":

@@ -8,7 +8,7 @@ merger = PdfFileMerger()
 def merge_book(book_id):
     all_pdfs = []
 
-    file_pattern = re.compile(r'Data\s?(\(\d+\))?.pdf')
+    file_pattern = re.compile(r'Data\s?(\(\d+\))?.pdf$')
 
     path = f'./pdf/{book_id}/'
     destination = f'./pdf/{book_id}/all/'
